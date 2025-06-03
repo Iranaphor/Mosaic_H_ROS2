@@ -1,7 +1,15 @@
-# ros2_python_template
-1. create repo from template
-2. git clone the new repo
-3. cd into the bash folder
-4. run `bash rename_package.sh $repo_name`
+# mosaic_h_ros2
 
-commit changes for initial commit
+## NMEA Configuration:
+
+### Port
+USB1
+
+### Type
+NMEA
+
+### Messages
+GGA+GST+HDT+RMC+VTG+HRP
+
+### Interval
+1 sec
