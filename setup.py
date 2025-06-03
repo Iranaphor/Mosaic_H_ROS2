@@ -21,6 +21,7 @@ setup(
     license='TODO: License declaration',
     entry_points={
         'console_scripts': [
+            f'rtk_publisher.py = mosaic_h_ros2.rtk_publisher:main'
         ],
     },
 )
