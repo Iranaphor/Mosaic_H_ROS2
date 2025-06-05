@@ -1,11 +1,15 @@
-import rclpy
-from rclpy.node import Node
-from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Quaternion
-import serial
-import threading
+import os
 import math
 import time
+import threading
+
+import serial
+
+import rclpy
+from rclpy.node import Node
+
+from nav_msgs.msg import Odometry
+from geometry_msgs.msg import Quaternion
 
 
 class GNSSHeadingNode(Node):
@@ -14,7 +18,8 @@ class GNSSHeadingNode(Node):
         super().__init__('gnss_heading_node')
 
         print('dev update')
-        self.ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
+        device = os.getenv('RTK_DEVICE')
+        self.ser = serial.Serial(device, 115200, timeout=1)
         self.odom_pub = self.create_publisher(Odometry, '/gnss/odom', 10)
 
         self.last_pos = None
@@ -34,9 +39,8 @@ class GNSSHeadingNode(Node):
                 self.get_logger().error(f'NMEA read error: {e}')
 
     def handle_nmea(self, line):
-        print('handler:')
         parts = line.split(',')
-        print(parts)
+        print('Handler:', parts)
 
         if line.startswith('$GPGGA'):
             try:
@@ -80,7 +84,7 @@ class GNSSHeadingNode(Node):
                 print('yaw fail (PASHR):', e)
                 return
 
-        print('publish?', self.last_pos, self.last_yaw)
+        print('Publish: pos=', self.last_pos, 'yaw=', self.last_yaw)
         if self.last_pos and self.last_yaw is not None:
             self.publish_odom()
 
